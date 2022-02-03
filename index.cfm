@@ -54,6 +54,7 @@ const getCongressPeople = (stateCode, lastName) => {
 }
 
 const refreshResults = (stateCode, lastName) => {
+    var re = new RegExp(`(${lastName})`, 'gi');
     var congress_people = getCongressPeople(stateCode, lastName);
     $("#results").html("");
     congress_people.then(function(data) {
@@ -62,15 +63,23 @@ const refreshResults = (stateCode, lastName) => {
             var title = item.title;
             var name = item.lname.toUpperCase() + ', ' + item.fname;
             var chamber = item.chamber == 'H' ? 'House of Representatives' : 'Senate';
-            var party = item.party == 'D' ? 'Democratic' : 'Republican';
+            var party = 'Independent';
+            if (item.party == 'D') {
+                party = 'Democratic';
+            } else if (item.party == 'R') {
+                party = 'Republican';
+            }
             var state_cd = item.state_cd;
             var district_id = ('000' + item.district_id).slice(-3);
 
+            if (lastName) {
+                name = name.replace(re, '<strong>$1</strong>');
+            }
             var $tr = $(
                 `<tr id="row-${congress_id}">`
             ).append(
                 $('<td>').text(title),
-                $('<td>').text(name),
+                $('<td>').html(name),
                 $('<td>').text(chamber),
                 $('<td>').text(party),
                 $('<td align="center">').text(state_cd),

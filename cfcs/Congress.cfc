@@ -35,7 +35,7 @@
     --->
     <cfset local.congress_people_list = [] />
     <cfloop query="variables.all_congress_people">
-        <cfif (!len(local.lname_filter) || findNoCase(local.lname_filter, variables.all_congress_people.lname) EQ 1)
+        <cfif (!len(local.lname_filter) || findNoCase(local.lname_filter, variables.all_congress_people.lname)  || findNoCase(local.lname_filter, variables.all_congress_people.fname))
            && (!len(local.state_cd) || local.state_cd EQ ucase(variables.all_congress_people.state_cd))
         >
             <cfset arrayAppend(
