@@ -25,7 +25,7 @@
         </cfloop>
     </select>
     <strong>Last Name:</strong>
-    <input id="search_lname" name="last_name" type="text" />
+    <input id="search_name" name="name_filter" type="text" />
     <input type="submit" value=" Search " />
 </form>
 <table border="1" cellpadding="2" cellspacing="0">
@@ -42,20 +42,20 @@
 </table>
 </body>
 <script>
-const getCongressPeople = (stateCode, lastName) => {
+const getCongressPeople = (stateCode, nameFilter) => {
     var congress_people = $.getJSON({
         url: '/tse/cfcs/Congress.cfc?method=getCongressPeople',
         data: {
             "state_cd": stateCode,
-            "lname_filter": lastName,
+            "name_filter": nameFilter,
         },
     });
     return congress_people.promise();
 }
 
-const refreshResults = (stateCode, lastName) => {
-    var re = new RegExp(`(${lastName})`, 'gi');
-    var congress_people = getCongressPeople(stateCode, lastName);
+const refreshResults = (stateCode, nameFilter) => {
+    var re = new RegExp(`(${nameFilter})`, 'gi');
+    var congress_people = getCongressPeople(stateCode, nameFilter);
     $("#results").html("");
     congress_people.then(function(data) {
         $.each(data, function(i, item) {
@@ -72,7 +72,7 @@ const refreshResults = (stateCode, lastName) => {
             var state_cd = item.state_cd;
             var district_id = ('000' + item.district_id).slice(-3);
 
-            if (lastName) {
+            if (nameFilter) {
                 name = name.replace(re, '<strong>$1</strong>');
             }
             var $tr = $(
@@ -103,8 +103,8 @@ $("#searchForm").submit(function(e) {
         values[field.name] = field.value;
     });
     var stateCode = values.state_cd || "";
-    var lastName = values.last_name || "";
-    refreshResults(stateCode, lastName);
+    var nameFilter = values.name_filter || "";
+    refreshResults(stateCode, nameFilter);
 });
 </script>
 </html>

@@ -19,14 +19,14 @@
 </cffunction>
 
 <cffunction name="getCongressPeople" access="remote" output="false" returntype="array">
-    <cfargument name="lname_filter" type="string" required="true" default="" />
     <cfargument name="state_cd" type="string" required="true" default="" />
+    <cfargument name="name_filter" type="string" required="true" default="" />
 
     <cfif !structKeyExists(variables, "all_congress_people")>
         <cfset variables.all_congress_people = getCongressPeopleQ() />
     </cfif>
  
-    <cfset local.lname_filter = trim(arguments.lname_filter) />
+    <cfset local.name_filter = trim(arguments.name_filter) />
     <cfset local.state_cd = ucase(trim(arguments.state_cd)) />
  
     <!---
@@ -35,7 +35,7 @@
     --->
     <cfset local.congress_people_list = [] />
     <cfloop query="variables.all_congress_people">
-        <cfif (!len(local.lname_filter) || findNoCase(local.lname_filter, variables.all_congress_people.lname)  || findNoCase(local.lname_filter, variables.all_congress_people.fname))
+        <cfif (!len(local.name_filter) || findNoCase(local.name_filter, variables.all_congress_people.lname)  || findNoCase(local.name_filter, variables.all_congress_people.fname))
            && (!len(local.state_cd) || local.state_cd EQ ucase(variables.all_congress_people.state_cd))
         >
             <cfset arrayAppend(
