@@ -65,13 +65,15 @@ const refreshResults = (stateCode, nameFilter) => {
         $.each(data, function(i, item) {
             var congressId = item.congress_id;
             var title = item.title;
-            var name = item.lname.toUpperCase() + ', ' + item.fname;
+            var name = item.lname ? item.lname.toUpperCase() + ', ' + item.fname : '<em>Seat Vacant</em>';
             var chamber = item.chamber == 'H' ? 'House of Representatives' : 'Senate';
-            var party = 'Independent';
+            var party = '&mdash;';
             if (item.party == 'D') {
                 party = 'Democratic';
             } else if (item.party == 'R') {
                 party = 'Republican';
+            } else if (item.party == 'I') {
+                party = 'Independent';
             }
             var stateName = states[item.state_cd] || item.state_cd;
             var districtId = ('000' + item.district_id).slice(-3);
@@ -85,7 +87,7 @@ const refreshResults = (stateCode, nameFilter) => {
                 $('<td>').text(title),
                 $('<td>').html(name),
                 $('<td>').text(chamber),
-                $('<td>').text(party),
+                $('<td>').html(party),
                 $('<td>').text(stateName),
                 $('<td style="text-align:center;">').text(districtId),
             ).appendTo("#results");
