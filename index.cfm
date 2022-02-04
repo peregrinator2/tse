@@ -1,5 +1,5 @@
 <cfsilent>
-<cfset the_title = "The Soft Edge - Members of Congress Search" />
+<cfset the_title = "The Soft Edge - Search Members of Congress" />
 
 <!--- We might try using geolocation to get the user's state to use as the default --->
 <cfset default_state_cd = "NJ" />
@@ -34,7 +34,7 @@
     <th align="left">Name</th>
     <th align="left">Chamber</th>
     <th align="left">Party</th>
-    <th>State</th>
+    <th align="left">State</th>
     <th>District</th>
 </tbody>
 <tbody id="results">
@@ -42,6 +42,10 @@
 </table>
 </body>
 <script>
+var states = [];
+<cfoutput query="get_states">
+    states["#state_cd#"] = "#state_name#";
+</cfoutput>
 const getCongressPeople = (stateCode, nameFilter) => {
     var congress_people = $.getJSON({
         url: '/tse/cfcs/Congress.cfc?method=getCongressPeople',
@@ -69,7 +73,7 @@ const refreshResults = (stateCode, nameFilter) => {
             } else if (item.party == 'R') {
                 party = 'Republican';
             }
-            var state_cd = item.state_cd;
+            var state_name = states[item.state_cd] || item.state_cd;
             var district_id = ('000' + item.district_id).slice(-3);
 
             if (nameFilter) {
@@ -82,7 +86,7 @@ const refreshResults = (stateCode, nameFilter) => {
                 $('<td>').html(name),
                 $('<td>').text(chamber),
                 $('<td>').text(party),
-                $('<td align="center">').text(state_cd),
+                $('<td>').text(state_name),
                 $('<td align="center">').text(district_id),
             ).appendTo("#results");
         });
