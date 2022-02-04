@@ -2,7 +2,7 @@
 <cfset the_title = "The Soft Edge - Search Members of Congress" />
 
 <!--- We might try using geolocation to get the user's state to use as the default --->
-<cfset default_state_cd = "NJ" />
+<cfset default_state_cd = structKeyExists(url, "state_cd") ? ucase(trim(url.state_cd)) : "NJ" />
 <cfset states_obj = new cfcs.States() />
 <cfset get_states = states_obj.getStates() />
 </cfsilent>
@@ -59,11 +59,11 @@ const getCongressPeople = (stateCode, nameFilter) => {
 
 const refreshResults = (stateCode, nameFilter) => {
     var re = new RegExp(`(${nameFilter})`, 'gi');
-    var congress_people = getCongressPeople(stateCode, nameFilter);
+    var congressPeople = getCongressPeople(stateCode, nameFilter);
     $("#results").html("");
-    congress_people.then(function(data) {
+    congressPeople.then(function(data) {
         $.each(data, function(i, item) {
-            var congress_id = item.congress_id;
+            var congressId = item.congress_id;
             var title = item.title;
             var name = item.lname.toUpperCase() + ', ' + item.fname;
             var chamber = item.chamber == 'H' ? 'House of Representatives' : 'Senate';
@@ -73,21 +73,21 @@ const refreshResults = (stateCode, nameFilter) => {
             } else if (item.party == 'R') {
                 party = 'Republican';
             }
-            var state_name = states[item.state_cd] || item.state_cd;
-            var district_id = ('000' + item.district_id).slice(-3);
+            var stateName = states[item.state_cd] || item.state_cd;
+            var districtId = ('000' + item.district_id).slice(-3);
 
             if (nameFilter) {
                 name = name.replace(re, '<strong>$1</strong>');
             }
             var $tr = $(
-                `<tr id="row-${congress_id}">`
+                `<tr id="row-${congressId}">`
             ).append(
                 $('<td>').text(title),
                 $('<td>').html(name),
                 $('<td>').text(chamber),
                 $('<td>').text(party),
-                $('<td>').text(state_name),
-                $('<td align="center">').text(district_id),
+                $('<td>').text(stateName),
+                $('<td align="center">').text(districtId),
             ).appendTo("#results");
         });
     },
@@ -108,7 +108,11 @@ $("#searchForm").submit(function(e) {
     });
     var stateCode = values.state_cd || "";
     var nameFilter = values.name_filter || "";
-    refreshResults(stateCode, nameFilter);
+    if (stateCode || nameFilter) {
+        refreshResults(stateCode, nameFilter);
+    } else {
+        alert("State or name filter required.");
+    }
 });
 </script>
 </html>
