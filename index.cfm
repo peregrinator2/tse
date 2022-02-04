@@ -28,14 +28,14 @@
     <input id="search_name" name="name_filter" type="text" />
     <input type="submit" value=" Search " />
 </form>
-<table border="1" cellpadding="2" cellspacing="0">
-<tbody id="result_header">
-    <th align="left">Title</th>
-    <th align="left">Name</th>
-    <th align="left">Chamber</th>
-    <th align="left">Party</th>
-    <th align="left">State</th>
-    <th>District</th>
+<table class="table table-hover" style="font-size:100%;">
+<thead id="result_header" class="thead-light">
+    <th style="width:15%;">Title</th>
+    <th style="width:30%;">Name</th>
+    <th style="width:20%;">Chamber</th>
+    <th style="width:10%;">Party</th>
+    <th style="width:15%;">State</th>
+    <th style="text-align:center; width:10%;">District</th>
 </tbody>
 <tbody id="results">
 </tbody>
@@ -87,7 +87,7 @@ const refreshResults = (stateCode, nameFilter) => {
                 $('<td>').text(chamber),
                 $('<td>').text(party),
                 $('<td>').text(stateName),
-                $('<td align="center">').text(districtId),
+                $('<td style="text-align:center;">').text(districtId),
             ).appendTo("#results");
         });
     },
